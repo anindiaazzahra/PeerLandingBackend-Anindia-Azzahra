@@ -16,7 +16,11 @@ namespace DAL.Repositories.Services.Interfaces
 
         Task<ResLoginDto> Login(ReqLoginDto reqLogin);
 
-        Task<ResEditUserDto> EditUser(string id, ReqEditUserDto reqEditUser);
+        Task<ResUserDto> GetUserById(string id);
+
+        Task DeleteUserById(string id);
+
+        Task<ResUserDto> UpdateUserById(string id, ReqEditUserDto user);
 
     }
 }
