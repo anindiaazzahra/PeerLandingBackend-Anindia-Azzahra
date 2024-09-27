@@ -141,18 +141,17 @@ namespace DAL.Repositories.Services
             return resEditUser;
         }
 
-        public async Task<ResUserDto> GetUserById(string id)
+        public async Task<ResUserByIdDto> GetUserById(string id)
         {
             var user = await _context.MstUsers.SingleOrDefaultAsync(x => x.Id == id);
             if (user == null)
             {
                 throw new Exception("User not found");
             }
-            var result = new ResUserDto
+            var result = new ResUserByIdDto
             {
                 Id = user.Id,
                 Name = user.Name,
-                Email = user.Email,
                 Role = user.Role,
                 Balance = user.Balance
             };
