@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,11 +74,20 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+//builder.Services.AddHttpsRedirection(options =>
+//{
+//    options.RedirectStatusCode = Status307TemporaryRedirect;
+//    options.HttpsPort = 5001;
+//});
+
 builder.Services.AddDbContext<PeerlandingContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<ILoanServices, LoanServices>();
+builder.Services.AddScoped<IFundingServices, FundingServices>();
+builder.Services.AddScoped<IRepaymentServices, RepaymentServices>();
+builder.Services.AddScoped<IMonthlyRepaymentServices, MonthlyRepaymentServices>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -86,6 +96,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 app.UseHttpsRedirection();
 

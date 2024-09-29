@@ -2,6 +2,7 @@
 using DAL.DTO.Res;
 using DAL.Repositories.Services;
 using DAL.Repositories.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Win32;
@@ -22,6 +23,7 @@ namespace BEPeer.Controllers
             _loanServices = loanServices;
         }
 
+        [Authorize(Roles = "borrower")]
         [HttpPost]
         public async Task<IActionResult> NewLoan(ReqLoanDto loan)
         {
@@ -74,7 +76,9 @@ namespace BEPeer.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut]
+        [Route("{id}")]
         public async Task<IActionResult> UpdateLoan(string id, ReqEditLoanDto dto)
         {
             try
@@ -128,12 +132,13 @@ namespace BEPeer.Controllers
 
         }
 
+        [Authorize]
         [HttpGet]
-        public async Task<IActionResult> LoanList(string status)
+        public async Task<IActionResult> LoanList(string status, string? idLender, string? borrowerId)
         {
             try
             {
-                var res = await _loanServices.LoanList(status);
+                var res = await _loanServices.LoanList(status, idLender, borrowerId);
                 return Ok(new ResBaseDto<object>
                 {
                     Success = true,
@@ -151,6 +156,32 @@ namespace BEPeer.Controllers
                 });
             }
         }
+
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetLoanById(string id)
+        {
+            try
+            {
+                var res = await _loanServices.GetLoanById(id);
+                return Ok(new ResBaseDto<object>
+                {
+                    Success = true,
+                    Message = "Success load loan details",
+                    Data = res
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResBaseDto<string>
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = null
+                });
+            }
+        }
+
     }
 
 }

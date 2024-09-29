@@ -20,7 +20,9 @@ namespace DAL.Repositories.Services.Interfaces
 
         Task DeleteUserById(string id);
 
-        Task<ResUserDto> UpdateUserById(string id, ReqEditUserDto user);
+        Task<ResEditUserDto> UpdateUserById(string id, ReqEditUserDto user);
+
+        Task<ResEditSaldoDto> UpdateSaldo(string id, ReqEditSaldoDto user);
 
     }
 }

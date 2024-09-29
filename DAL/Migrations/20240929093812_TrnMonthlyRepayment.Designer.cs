@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DAL.Migrations
 {
     [DbContext(typeof(PeerlandingContext))]
-    [Migration("20240925022921_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240929093812_TrnMonthlyRepayment")]
+    partial class TrnMonthlyRepayment
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -139,6 +139,70 @@ namespace DAL.Migrations
                     b.ToTable("trn_funding");
                 });
 
+            modelBuilder.Entity("DAL.Models.TrnMonthlyRepayment", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text")
+                        .HasColumnName("id");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric")
+                        .HasColumnName("amount");
+
+                    b.Property<string>("RepaymentId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("repayment_id");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("boolean")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RepaymentId");
+
+                    b.ToTable("trn_monthly_repayment");
+                });
+
+            modelBuilder.Entity("DAL.Models.TrnRepayment", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric")
+                        .HasColumnName("amount");
+
+                    b.Property<decimal>("BalanceAmount")
+                        .HasColumnType("numeric")
+                        .HasColumnName("balance_amount");
+
+                    b.Property<string>("LoanId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("loan_id");
+
+                    b.Property<DateTime>("PaidAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("paid_at");
+
+                    b.Property<decimal>("RepaidAmount")
+                        .HasColumnType("numeric")
+                        .HasColumnName("repaid_amount");
+
+                    b.Property<string>("RepaidStatus")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("repaid_status");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LoanId");
+
+                    b.ToTable("trn_repayment");
+                });
+
             modelBuilder.Entity("DAL.Models.MstLoans", b =>
                 {
                     b.HasOne("DAL.Models.MstUser", "User")
@@ -167,6 +231,28 @@ namespace DAL.Migrations
                     b.Navigation("Loan");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DAL.Models.TrnMonthlyRepayment", b =>
+                {
+                    b.HasOne("DAL.Models.TrnRepayment", "Repayment")
+                        .WithMany()
+                        .HasForeignKey("RepaymentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Repayment");
+                });
+
+            modelBuilder.Entity("DAL.Models.TrnRepayment", b =>
+                {
+                    b.HasOne("DAL.Models.MstLoans", "Loan")
+                        .WithMany()
+                        .HasForeignKey("LoanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Loan");
                 });
 
             modelBuilder.Entity("DAL.Models.MstUser", b =>

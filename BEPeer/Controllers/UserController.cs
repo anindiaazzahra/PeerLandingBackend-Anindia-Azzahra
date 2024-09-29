@@ -200,7 +200,7 @@ namespace BEPeer.Controllers
             }
         }
 
-        [Authorize(Roles = "admin")]
+        // [Authorize(Roles = "admin")]
         [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> Update(string id, ReqEditUserDto dto)
@@ -246,6 +246,7 @@ namespace BEPeer.Controllers
         }
 
         //[Authorize(Roles = "admin")]
+        [Authorize]
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> GetById(string id)
@@ -257,6 +258,52 @@ namespace BEPeer.Controllers
                 {
                     Success = true,
                     Message = "User fetched successfully",
+                    Data = user
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResBaseDto<string>
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = null
+                });
+            }
+        }
+
+        [Authorize]
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateSaldo(string id, ReqEditSaldoDto dto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState
+                        .Where(x => x.Value.Errors.Any())
+                        .Select(x => new
+                        {
+                            Field = x.Key,
+                            Messages = x.Value.Errors.Select(e => e.ErrorMessage).ToList()
+                        }).ToList();
+                    var errorMessage = new StringBuilder("Validation error occured!");
+                    return BadRequest(new ResBaseDto<object>
+                    {
+                        Success = false,
+                        Message = errorMessage.ToString(),
+                        Data = errors
+                    });
+                };
+
+                await _userservice.GetUserById(id);
+                var user = await _userservice.UpdateSaldo(id, dto);
+
+                return Ok(new ResBaseDto<object>
+                {
+                    Success = true,
+                    Message = "User updated successfully",
                     Data = user
                 });
             }

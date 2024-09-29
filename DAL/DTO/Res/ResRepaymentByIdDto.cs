@@ -1,33 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DAL.DTO.Res
 {
-    public class ResListLoanDto
+    public class ResRepaymentByIdDto
     {
+        public string Id { get; set; }
+
         public string LoanId { get; set; }
 
         public string LenderId { get; set; }
 
         public string BorrowerId { get; set; }
-        public string BorrowerName { get; set; }
 
-        public decimal Amount { get; set; }
+        public string BorrowerName { get; set; }
 
         public decimal InterestRate { get; set; }
 
         public int Duration { get; set; }
 
-        public string Status { get; set; }
+        public decimal Amount { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public decimal RepaidAmount { get; set; }
 
-        public DateTime UpdatedAt { get; set; }
+        public decimal BalanceAmount { get; set; }
 
+        public string RepaidStatus { get; set; }
+
+        public DateTime PaidAt { get; set; }
     }
 }

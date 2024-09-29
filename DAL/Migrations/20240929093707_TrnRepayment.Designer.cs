@@ -3,6 +3,7 @@ using System;
 using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DAL.Migrations
 {
     [DbContext(typeof(PeerlandingContext))]
-    partial class PeerlandingContextModelSnapshot : ModelSnapshot
+    [Migration("20240929093707_TrnRepayment")]
+    partial class TrnRepayment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,32 +139,6 @@ namespace DAL.Migrations
                     b.ToTable("trn_funding");
                 });
 
-            modelBuilder.Entity("DAL.Models.TrnMonthlyRepayment", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text")
-                        .HasColumnName("id");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("numeric")
-                        .HasColumnName("amount");
-
-                    b.Property<string>("RepaymentId")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("repayment_id");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("boolean")
-                        .HasColumnName("status");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RepaymentId");
-
-                    b.ToTable("trn_monthly_repayment");
-                });
-
             modelBuilder.Entity("DAL.Models.TrnRepayment", b =>
                 {
                     b.Property<string>("Id")
@@ -228,17 +205,6 @@ namespace DAL.Migrations
                     b.Navigation("Loan");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("DAL.Models.TrnMonthlyRepayment", b =>
-                {
-                    b.HasOne("DAL.Models.TrnRepayment", "Repayment")
-                        .WithMany()
-                        .HasForeignKey("RepaymentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Repayment");
                 });
 
             modelBuilder.Entity("DAL.Models.TrnRepayment", b =>

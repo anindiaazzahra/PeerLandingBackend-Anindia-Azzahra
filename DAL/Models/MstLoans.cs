@@ -13,7 +13,7 @@ namespace DAL.Models
     {
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        
+
         [Required]
         [ForeignKey("User")]
         [Column("borrower_id")]
@@ -21,15 +21,15 @@ namespace DAL.Models
 
         [Required]
         [Column("amount")]
-        public decimal Amount {  get; set; }
+        public decimal Amount { get; set; }
 
         [Required]
-        [Column("interest_rate")] 
-        public decimal InterestRate{ get; set; }
+        [Column("interest_rate")]
+        public decimal InterestRate { get; set; }
 
         [Required]
         [Column("duration_month")]
-        public int Duration { get; set; }
+        public int Duration { get; set; } = 12;
 
         [Required]
         [Column("status")]

@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,7 +31,7 @@ namespace DAL.Repositories.Services
         public async Task<List<ResUserDto>> GetAllUsers()
         {
             return await _context.MstUsers
-                .Where(user => user.Role != "Admin")
+                .Where(user => user.Role != "admin")
                 .Select(user => new ResUserDto
                 {
                     Id = user.Id,
@@ -58,6 +59,10 @@ namespace DAL.Repositories.Services
 
             var loginResponse = new ResLoginDto
             {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Role = user.Role,
                 Token = token,
             };
 
@@ -163,25 +168,46 @@ namespace DAL.Repositories.Services
             await _context.MstUsers.Where(x => x.Id == id).ExecuteDeleteAsync();
         }
 
-        public async Task<ResUserDto> UpdateUserById(string id, ReqEditUserDto dto)
+        public async Task<ResEditUserDto> UpdateUserById(string id, ReqEditUserDto dto)
         {
             var user = await _context.MstUsers.SingleOrDefaultAsync(x => x.Id == id);
             if (user == null)
             {
                 throw new Exception("User not found");
             }
+
             user.Name = dto.Name;
             user.Role = dto.Role;
             user.Balance = dto.Balance ?? user.Balance;
+
             _context.MstUsers.Update(user);
             await _context.SaveChangesAsync();
-            return new ResUserDto
+
+            return new ResEditUserDto
             {
                 Id = user.Id,
                 Name = user.Name,
-                Email = user.Email,
                 Role = user.Role,
                 Balance = user.Balance
+            };
+        }
+
+        public async Task<ResEditSaldoDto> UpdateSaldo(string id, ReqEditSaldoDto dto)
+        {
+            var user = await _context.MstUsers.SingleOrDefaultAsync(x => x.Id == id);
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            user.Balance = dto.Balance;
+
+            _context.MstUsers.Update(user);
+            await _context.SaveChangesAsync();
+
+            return new ResEditSaldoDto
+            {
+                Balance = user.Balance ?? 0,
             };
         }
     }
