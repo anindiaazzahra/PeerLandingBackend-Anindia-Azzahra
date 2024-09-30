@@ -138,8 +138,18 @@ namespace DAL.Repositories.Services
                         throw new Exception("loan not found");
                     }
 
-                    lender.Balance += loan.Amount;
-                    borrower.Balance -= loan.Amount;
+                    var lenderSaldoDto = new ReqEditSaldoDto
+                    {
+                        Balance = lender.Balance ?? 0 + loan.Amount
+                    };
+
+                    var borrowerSaldoDto = new ReqEditSaldoDto
+                    {
+                        Balance = borrower.Balance ?? 0 - loan.Amount
+                    };
+
+                    await _userService.UpdateSaldo(lender.Id, lenderSaldoDto);
+                    await _userService.UpdateSaldo(borrower.Id, borrowerSaldoDto);
 
                     newLoan.Status = "repaid";
                 }
